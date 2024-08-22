@@ -1,5 +1,6 @@
 import GalleryDetail from '@/components/gallery/GalleryDetail';
 import useFetchGalleryDetailQuery from '@/hooks/server/gallery/useFetchGalleryDetailQuery';
+import { NextPageContext } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -26,3 +27,8 @@ const GalleryDetailPage = () => {
 };
 
 export default GalleryDetailPage;
+export const getServerSideProps = async (context: NextPageContext) => {
+  const { query } = context;
+  const { id } = query;
+  return { props: { id } };
+};

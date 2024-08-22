@@ -1,7 +1,6 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import useFetchGalleryDeleteQuery from '@/hooks/server/gallery/useFetchGalleryDeleteQuery';
 import { format } from 'date-fns';
-import { NextPageContext } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Button } from '../ui/button';
@@ -64,9 +63,3 @@ const GalleryDetail = ({ gallery, isLoading }: { gallery?: I_GalleryData; isLoad
 };
 
 export default GalleryDetail;
-
-export const getServerSideProps = async (context: NextPageContext) => {
-  const { query } = context;
-  const { id } = query;
-  return { props: { id } };
-};

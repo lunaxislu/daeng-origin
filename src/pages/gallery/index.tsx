@@ -1,3 +1,6 @@
+import { fetchInfinityGalleries } from '@/components/galleryRefactor/api/handler';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { NextPageContext } from 'next';
 import Head from 'next/head';
 import GalleryMain from '../../components/gallery/GalleryMain';
 
@@ -17,3 +20,16 @@ const Gallery = () => {
 };
 
 export default Gallery;
+export const getServerSideProps = async (context: NextPageContext) => {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['galleryUpload'],
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
+  });
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+};
