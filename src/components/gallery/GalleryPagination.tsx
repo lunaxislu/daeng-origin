@@ -1,23 +1,22 @@
-import Skeleton from '@/components/ui/skeleton';
 import usePaginationQueries from '@/hooks/server/galleryRefactor/pagination-hook/usePaginationQueries';
-import { PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
-import { QueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
-import Link from 'next/link';
-import { fetchGalleryDetail } from '../api/handler';
+import { useRouter } from 'next/router';
+import { fetchGalleryDetail } from '../galleryRefactor/api/handler';
+import Skeleton from '../ui/skeleton';
 
-interface PostDetailPaginationProps {
-  id: string;
-  useQueryClient: QueryClient;
-}
-const GalleryPagination = (props: PostDetailPaginationProps) => {
-  const { id, useQueryClient } = props;
+const GalleryPagination = ({ id }: { id: string }) => {
+  const queryClient = useQueryClient();
   const { results } = usePaginationQueries({
-    fetchGalleryDetail,
+    fetchGalleryDetail: fetchGalleryDetail,
+    queryKey: ['galleryUpload'],
     id,
-    queryKey: [PostQueryKey.posts],
-    useQueryClient,
+    useQueryClient: queryClient,
   });
+  const router = useRouter();
+  const handleNavigate = (id: string) => {
+    router.push(`/gallery/detail/${id}`, undefined, {});
+  };
   return (
     <div className="flex justify-center gap-[20px] p-11">
       {results.map((query, i) => {
@@ -26,13 +25,8 @@ const GalleryPagination = (props: PostDetailPaginationProps) => {
             {query.isLoading ? (
               <Skeleton className="w-[240px] h-[240px]" type="picture" />
             ) : query.data ? (
-              <Link
-                href={{
-                  href: `/galleryRefactor/${query.data.id}`,
-                  query: { postId: query.data.id },
-                }}
-                shallow={true}
-                prefetch={false}
+              <div
+                onClick={() => handleNavigate(`${query.data.id}`)}
                 className="flex flex-col items-center bg-white rounded-lg shadow-md cursor-pointer overflow-hidden"
                 key={query.data.id}
               >
@@ -55,7 +49,7 @@ const GalleryPagination = (props: PostDetailPaginationProps) => {
                     </span>
                   ))}
                 </div>
-              </Link>
+              </div>
             ) : null}
           </div>
         );

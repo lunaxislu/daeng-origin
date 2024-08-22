@@ -27,6 +27,7 @@ export const getServerSideProps = async (context: NextPageContext) => {
     initialPageParam: 1,
     queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
   });
+
   return {
     props: {
       dehydratedState: dehydrate(queryClient),

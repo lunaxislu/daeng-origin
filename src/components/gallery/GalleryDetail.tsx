@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Button } from '../ui/button';
+import GalleryPagination from './GalleryPagination';
 import { I_GalleryData } from './type/gallery';
 
 const GalleryDetail = ({ gallery, isLoading }: { gallery?: I_GalleryData; isLoading: boolean }) => {
@@ -58,6 +59,7 @@ const GalleryDetail = ({ gallery, isLoading }: { gallery?: I_GalleryData; isLoad
           <Button onClick={handleDelete}>삭제</Button>
         </div>
       )}
+      <GalleryPagination id={id} />
     </div>
   );
 };
