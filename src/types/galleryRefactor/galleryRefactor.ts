@@ -24,5 +24,5 @@ export interface PostCategory {
 }
 
 export enum PostQueryKey {
-  posts = 'changeToSample',
+  posts = 'posts',
 }

@@ -1,6 +1,7 @@
 import { withCSR } from '@/api/withCsr';
 import { fetchGalleryDetail, fetchInfinityGalleries } from '@/components/galleryRefactor/api/handler';
 import { PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
+
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';

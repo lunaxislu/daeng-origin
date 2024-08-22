@@ -17,7 +17,6 @@ const usePaginationQueries = (props: PostDetailPaginationProps) => {
 
   const queryKeys = getOtherSamplePostSequence(id);
   const queries: UseQueryOptions<Post, unknown, unknown, (string | number)[]>[] = queryKeys.map(key => {
-    console.log(key);
     return {
       queryKey: [...queryKey, `${key}`],
       queryFn: () => fetchGalleryDetail(`${key}`),
