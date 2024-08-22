@@ -1,9 +1,39 @@
+import { withCSR } from '@/api/withCsr';
+import { fetchGalleryDetail, fetchInfinityGalleries } from '@/components/galleryRefactor/api/handler';
+import { PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { GetServerSidePropsContext } from 'next';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
 const BASE_PATH = '/galleryRefactor';
+const LazyInfinityComponent = dynamic(() => import('@/components/galleryRefactor/main/GalleryList'));
+const LazyDetailComponent = dynamic(() => import('@/components/galleryRefactor/detail/GalleryDetail'));
 const GalleryRefactorPage = () => {
   const router = useRouter();
-  return <div></div>;
+  return <div>{router.asPath === BASE_PATH ? <LazyInfinityComponent /> : <LazyDetailComponent />}</div>;
 };
 
 export default GalleryRefactorPage;
+
+export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext) => {
+  const queryKey = ctx.query.postId;
+  const queryClient = new QueryClient();
+  if (queryKey) {
+    await queryClient.prefetchQuery({
+      queryKey: [PostQueryKey.posts, queryKey],
+      queryFn: () => fetchGalleryDetail(queryKey as string),
+    });
+  } else {
+    await queryClient.prefetchInfiniteQuery({
+      queryKey: [PostQueryKey.posts],
+      initialPageParam: 1,
+      queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
+    });
+  }
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+});
