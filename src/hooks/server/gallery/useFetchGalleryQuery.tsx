@@ -1,27 +1,14 @@
-import { axiosApiRouteAPINotHeader } from '@/api/common/axios_instance';
+import { fetchInfinityGalleries } from '@/components/galleryRefactor/api/handler';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 const useFetchGalleryQuery = () => {
-  /**
-   * api요청 함수 (다른파일로 분리하여 import 하시면 됩니다.)
-   */
-  const fetchGalleries = async (pageParam: number) => {
-    try {
-      const response = await axiosApiRouteAPINotHeader.get(`post/All/${pageParam}?isNotHeader=true`);
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error('갤러리 데이터 가져오기 실패:', error);
-    }
-  };
-
   /**
    * 무한스클롤 용 react-query
    */
   const { data, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
     {
       queryKey: ['galleryUpload'],
-      queryFn: ({ pageParam }) => fetchGalleries(pageParam),
+      queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPage) => {
         if (lastPage) {
