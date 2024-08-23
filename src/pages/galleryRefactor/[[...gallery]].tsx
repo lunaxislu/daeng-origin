@@ -22,46 +22,28 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
   const queryClient = new QueryClient();
 
   if (queryKey) {
-    try {
-      const result = await queryClient.fetchQuery<Post>({
-        queryKey: [PostQueryKey.posts, queryKey],
-        queryFn: () => fetchGalleryDetail(queryKey as string),
-      });
+    const result = await queryClient.fetchQuery<Post>({
+      queryKey: [PostQueryKey.posts, queryKey],
+      queryFn: () => fetchGalleryDetail(queryKey as string),
+    });
 
-      return {
-        props: {
-          dehydratedState: dehydrate(queryClient),
-        },
-      };
-    } catch (err) {
-      return {
-        redirect: {
-          destination: '/404',
-          permanent: true,
-        },
-      };
-    }
+    return {
+      props: {
+        dehydratedState: dehydrate(queryClient),
+      },
+    };
   } else {
-    try {
-      const results = await queryClient.fetchInfiniteQuery({
-        queryKey: [PostQueryKey.posts],
-        initialPageParam: 1,
-        queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
-        staleTime: 60 * 1000,
-      });
+    const results = await queryClient.fetchInfiniteQuery({
+      queryKey: [PostQueryKey.posts],
+      initialPageParam: 1,
+      queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
+      staleTime: 60 * 1000,
+    });
 
-      return {
-        props: {
-          dehydratedState: dehydrate(queryClient),
-        },
-      };
-    } catch (err) {
-      return {
-        redirect: {
-          destination: '/404',
-          permanent: false,
-        },
-      };
-    }
+    return {
+      props: {
+        dehydratedState: dehydrate(queryClient),
+      },
+    };
   }
 });
