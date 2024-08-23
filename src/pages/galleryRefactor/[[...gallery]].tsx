@@ -42,7 +42,7 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
       isError = true;
     }
   }
-  if (isError) return { notFound: true };
+  // if (isError) return { notFound: true };
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
