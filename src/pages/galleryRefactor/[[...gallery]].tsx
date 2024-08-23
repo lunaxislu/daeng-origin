@@ -23,7 +23,7 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
   let isError = false;
   if (queryKey) {
     try {
-      const result = await queryClient.prefetchQuery<Post>({
+      await queryClient.fetchQuery<Post>({
         queryKey: [PostQueryKey.posts, queryKey],
         queryFn: () => fetchGalleryDetail(queryKey as string),
       });
