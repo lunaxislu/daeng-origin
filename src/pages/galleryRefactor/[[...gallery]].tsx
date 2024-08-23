@@ -10,20 +10,9 @@ const LazyInfinityComponent = dynamic(() => import('@/components/galleryRefactor
 const LazyDetailComponent = dynamic(() => import('@/components/galleryRefactor/detail/GalleryDetail'));
 const BASE_PATH = '/galleryRefactor';
 
-const GalleryRefactorPage = ({ isError, error }: { isError: boolean; error: unknown }) => {
-  console.log(error);
+const GalleryRefactorPage = () => {
   const router = useRouter();
-  return (
-    <div>
-      {isError ? (
-        <div>에러 처리....</div>
-      ) : router.asPath === BASE_PATH ? (
-        <LazyInfinityComponent />
-      ) : (
-        <LazyDetailComponent />
-      )}
-    </div>
-  );
+  return <div>{router.asPath === BASE_PATH ? <LazyInfinityComponent /> : <LazyDetailComponent />}</div>;
 };
 
 export default GalleryRefactorPage;
@@ -31,36 +20,23 @@ export default GalleryRefactorPage;
 export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext) => {
   const queryKey = ctx.query.postId;
   const queryClient = new QueryClient();
-  let isError = false;
-  let error: unknown;
+
   if (queryKey) {
-    try {
-      await queryClient.fetchQuery<Post>({
-        queryKey: [PostQueryKey.posts, queryKey],
-        queryFn: () => fetchGalleryDetail(queryKey as string),
-      });
-    } catch (err) {
-      isError = true;
-      error = err;
-    }
+    await queryClient.prefetchQuery<Post>({
+      queryKey: [PostQueryKey.posts, queryKey],
+      queryFn: () => fetchGalleryDetail(queryKey as string),
+    });
   } else {
-    try {
-      await queryClient.fetchInfiniteQuery({
-        queryKey: [PostQueryKey.posts],
-        initialPageParam: 1,
-        queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
-        staleTime: 60 * 1000,
-      });
-    } catch (err) {
-      isError = true;
-      error = err;
-    }
+    await queryClient.prefetchInfiniteQuery({
+      queryKey: [PostQueryKey.posts],
+      initialPageParam: 1,
+      queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
+      staleTime: 60 * 1000,
+    });
   }
 
   return {
     props: {
-      isError,
-      error,
       dehydratedState: dehydrate(queryClient),
     },
   };
