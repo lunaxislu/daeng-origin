@@ -1,6 +1,6 @@
 import { withCSR } from '@/api/withCsr';
 import { fetchGalleryDetail, fetchInfinityGalleries } from '@/components/galleryRefactor/api/handler';
-import { GalleryInitialData, Post, PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
+import { Post, PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
@@ -10,9 +10,19 @@ const LazyInfinityComponent = dynamic(() => import('@/components/galleryRefactor
 const LazyDetailComponent = dynamic(() => import('@/components/galleryRefactor/detail/GalleryDetail'));
 const BASE_PATH = '/galleryRefactor';
 
-const GalleryRefactorPage = ({ initialData }: { initialData: GalleryInitialData }) => {
+const GalleryRefactorPage = ({ isError }: { isError: boolean }) => {
   const router = useRouter();
-  return <div>{router.asPath === BASE_PATH ? <LazyInfinityComponent /> : <LazyDetailComponent />}</div>;
+  return (
+    <div>
+      {isError ? (
+        <div>데이터가 없습니다.</div>
+      ) : router.asPath === BASE_PATH ? (
+        <LazyInfinityComponent />
+      ) : (
+        <LazyDetailComponent />
+      )}
+    </div>
+  );
 };
 
 export default GalleryRefactorPage;
@@ -20,21 +30,18 @@ export default GalleryRefactorPage;
 export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext) => {
   const queryKey = ctx.query.postId;
   const queryClient = new QueryClient();
+  let isError = false;
   if (queryKey) {
     const result = await queryClient.fetchQuery<Post>({
       queryKey: [PostQueryKey.posts, queryKey],
       queryFn: () => fetchGalleryDetail(queryKey as string),
     });
 
-    if (!result) {
-      return {
-        notFound: true,
-      };
-    }
+    if (!result) isError = true;
     return {
       props: {
         dehydratedState: dehydrate(queryClient),
-        initialData: result,
+        isError,
       },
     };
   } else {
@@ -44,15 +51,11 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
       queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
       staleTime: 60 * 1000,
     });
-    if (!results) {
-      return {
-        notFound: true,
-      };
-    }
+    if (!results) isError = true;
     return {
       props: {
         dehydratedState: dehydrate(queryClient),
-        initialData: results,
+        isError,
       },
     };
   }

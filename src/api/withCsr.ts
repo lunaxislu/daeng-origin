@@ -6,7 +6,6 @@ export const withCSR = (next: GetServerSideProps) => async (ctx: GetServerSidePr
 
   if (isCSR) {
     return {
-      notFound: false,
       props: {},
     };
   }
