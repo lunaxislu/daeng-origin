@@ -1,13 +1,9 @@
 import { withCSR } from '@/api/withCsr';
 import { fetchGalleryDetail, fetchInfinityGalleries } from '@/components/galleryRefactor/api/handler';
 import { GalleryInitialData, InitialInfinitePosts, Post, PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
-
 import { dehydrate, InfiniteData, QueryClient } from '@tanstack/react-query';
-
 import { GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const LazyInfinityComponent = dynamic(() => import('@/components/galleryRefactor/main/GalleryList'));
@@ -37,8 +33,13 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
         },
       };
     } catch (err) {
+      if (err) {
+        return {
+          notFound: true,
+        };
+      }
       return {
-        notFound: true,
+        props: {},
       };
     }
   } else {
@@ -49,6 +50,7 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
         queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
         staleTime: 60 * 1000,
       });
+
       return {
         props: {
           dehydratedState: dehydrate(queryClient),
@@ -56,8 +58,13 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
         },
       };
     } catch (err) {
+      if (err) {
+        return {
+          notFound: true,
+        };
+      }
       return {
-        notFound: true,
+        props: {},
       };
     }
   }
