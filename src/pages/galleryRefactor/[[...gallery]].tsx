@@ -10,9 +10,19 @@ const LazyInfinityComponent = dynamic(() => import('@/components/galleryRefactor
 const LazyDetailComponent = dynamic(() => import('@/components/galleryRefactor/detail/GalleryDetail'));
 const BASE_PATH = '/galleryRefactor';
 
-const GalleryRefactorPage = () => {
+const GalleryRefactorPage = ({ isError }: { isError: boolean }) => {
   const router = useRouter();
-  return <div>{router.asPath === BASE_PATH ? <LazyInfinityComponent /> : <LazyDetailComponent />}</div>;
+  return (
+    <div>
+      {isError ? (
+        <div>에러 처리....</div>
+      ) : router.asPath === BASE_PATH ? (
+        <LazyInfinityComponent />
+      ) : (
+        <LazyDetailComponent />
+      )}
+    </div>
+  );
 };
 
 export default GalleryRefactorPage;
@@ -42,9 +52,10 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
       isError = true;
     }
   }
-  // if (isError) return { notFound: true };
+
   return {
     props: {
+      isError,
       dehydratedState: dehydrate(queryClient),
     },
   };
