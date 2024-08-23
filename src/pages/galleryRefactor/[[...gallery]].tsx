@@ -10,19 +10,9 @@ const LazyInfinityComponent = dynamic(() => import('@/components/galleryRefactor
 const LazyDetailComponent = dynamic(() => import('@/components/galleryRefactor/detail/GalleryDetail'));
 const BASE_PATH = '/galleryRefactor';
 
-const GalleryRefactorPage = ({ isError }: { isError: boolean }) => {
+const GalleryRefactorPage = () => {
   const router = useRouter();
-  return (
-    <div>
-      {isError ? (
-        <div>데이터가 없습니다.</div>
-      ) : router.asPath === BASE_PATH ? (
-        <LazyInfinityComponent />
-      ) : (
-        <LazyDetailComponent />
-      )}
-    </div>
-  );
+  return <div>{router.asPath === BASE_PATH ? <LazyInfinityComponent /> : <LazyDetailComponent />}</div>;
 };
 
 export default GalleryRefactorPage;
@@ -30,33 +20,48 @@ export default GalleryRefactorPage;
 export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext) => {
   const queryKey = ctx.query.postId;
   const queryClient = new QueryClient();
-  let isError = false;
-  if (queryKey) {
-    const result = await queryClient.fetchQuery<Post>({
-      queryKey: [PostQueryKey.posts, queryKey],
-      queryFn: () => fetchGalleryDetail(queryKey as string),
-    });
 
-    if (!result) isError = true;
-    return {
-      props: {
-        dehydratedState: dehydrate(queryClient),
-        isError,
-      },
-    };
+  if (queryKey) {
+    try {
+      const result = await queryClient.fetchQuery<Post>({
+        queryKey: [PostQueryKey.posts, queryKey],
+        queryFn: () => fetchGalleryDetail(queryKey as string),
+      });
+
+      return {
+        props: {
+          dehydratedState: dehydrate(queryClient),
+        },
+      };
+    } catch (err) {
+      return {
+        redirect: {
+          destination: '/404',
+          permanent: true,
+        },
+      };
+    }
   } else {
-    const results = await queryClient.fetchInfiniteQuery({
-      queryKey: [PostQueryKey.posts],
-      initialPageParam: 1,
-      queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
-      staleTime: 60 * 1000,
-    });
-    if (!results) isError = true;
-    return {
-      props: {
-        dehydratedState: dehydrate(queryClient),
-        isError,
-      },
-    };
+    try {
+      const results = await queryClient.fetchInfiniteQuery({
+        queryKey: [PostQueryKey.posts],
+        initialPageParam: 1,
+        queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
+        staleTime: 60 * 1000,
+      });
+
+      return {
+        props: {
+          dehydratedState: dehydrate(queryClient),
+        },
+      };
+    } catch (err) {
+      return {
+        redirect: {
+          destination: '/404',
+          permanent: false,
+        },
+      };
+    }
   }
 });
