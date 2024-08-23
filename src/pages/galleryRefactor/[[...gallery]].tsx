@@ -21,43 +21,39 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
   const queryKey = ctx.query.postId;
   const queryClient = new QueryClient();
   if (queryKey) {
-    try {
-      const result = await queryClient.fetchQuery<Post>({
-        queryKey: [PostQueryKey.posts, queryKey],
-        queryFn: () => fetchGalleryDetail(queryKey as string),
-      });
-      return {
-        notFound: false,
-        props: {
-          dehydratedState: dehydrate(queryClient),
-          initialData: result,
-        },
-      };
-    } catch (err) {
-      return {
-        notFound: true,
-      };
-    }
-  } else {
-    try {
-      const results = await queryClient.fetchInfiniteQuery({
-        queryKey: [PostQueryKey.posts],
-        initialPageParam: 1,
-        queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
-        staleTime: 60 * 1000,
-      });
+    const result = await queryClient.fetchQuery<Post>({
+      queryKey: [PostQueryKey.posts, queryKey],
+      queryFn: () => fetchGalleryDetail(queryKey as string),
+    });
 
-      return {
-        notFound: false,
-        props: {
-          dehydratedState: dehydrate(queryClient),
-          initialData: results,
-        },
-      };
-    } catch (err) {
+    if (!result) {
       return {
         notFound: true,
       };
     }
+    return {
+      props: {
+        dehydratedState: dehydrate(queryClient),
+        initialData: result,
+      },
+    };
+  } else {
+    const results = await queryClient.fetchInfiniteQuery({
+      queryKey: [PostQueryKey.posts],
+      initialPageParam: 1,
+      queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
+      staleTime: 60 * 1000,
+    });
+    if (!results) {
+      return {
+        notFound: true,
+      };
+    }
+    return {
+      props: {
+        dehydratedState: dehydrate(queryClient),
+        initialData: results,
+      },
+    };
   }
 });
