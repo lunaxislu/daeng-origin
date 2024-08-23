@@ -26,3 +26,8 @@ export interface PostCategory {
 export enum PostQueryKey {
   posts = 'posts',
 }
+export interface InitialInfinitePosts {
+  pages: Post[][]; // 각 페이지에 대한 포스트 배열
+  pageParams: number[]; // 각 페이지의 파라미터
+}
+export type GalleryInitialData = Post | InitialInfinitePosts;

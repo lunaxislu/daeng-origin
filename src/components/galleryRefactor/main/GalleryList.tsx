@@ -1,3 +1,4 @@
+import GalleryListSkeleton from '@/components/gallery/skeleton/GalleryListSkeleton';
 import useFetchInfinityGalleries from '@/hooks/server/galleryRefactor/main-hook/useFetchInfinityGalleries';
 import { PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
 import { Fragment } from 'react';
@@ -26,7 +27,7 @@ const GalleryList = () => {
       if (inView) fetchNextPage();
     },
   });
-
+  if (isLoading) return <GalleryListSkeleton />;
   return (
     <Fragment>
       <div></div>
