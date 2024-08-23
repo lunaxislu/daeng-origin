@@ -1,7 +1,7 @@
 import { withCSR } from '@/api/withCsr';
 import { fetchGalleryDetail, fetchInfinityGalleries } from '@/components/galleryRefactor/api/handler';
-import { GalleryInitialData, InitialInfinitePosts, Post, PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
-import { dehydrate, InfiniteData, QueryClient } from '@tanstack/react-query';
+import { GalleryInitialData, Post, PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -27,19 +27,15 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
         queryFn: () => fetchGalleryDetail(queryKey as string),
       });
       return {
+        notFound: false,
         props: {
           dehydratedState: dehydrate(queryClient),
           initialData: result,
         },
       };
     } catch (err) {
-      if (err) {
-        return {
-          notFound: true,
-        };
-      }
       return {
-        props: {},
+        notFound: true,
       };
     }
   } else {
@@ -52,19 +48,15 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
       });
 
       return {
+        notFound: false,
         props: {
           dehydratedState: dehydrate(queryClient),
           initialData: results,
         },
       };
     } catch (err) {
-      if (err) {
-        return {
-          notFound: true,
-        };
-      }
       return {
-        props: {},
+        notFound: true,
       };
     }
   }
