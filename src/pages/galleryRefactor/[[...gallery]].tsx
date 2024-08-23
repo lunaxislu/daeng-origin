@@ -20,7 +20,7 @@ export default GalleryRefactorPage;
 export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext) => {
   const queryKey = ctx.query.postId;
   const queryClient = new QueryClient();
-
+  let isError = false;
   if (queryKey) {
     const result = await queryClient.prefetchQuery<Post>({
       queryKey: [PostQueryKey.posts, queryKey],
@@ -40,16 +40,14 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
         queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
         staleTime: 60 * 1000,
       });
-
-      return {
-        props: {
-          dehydratedState: dehydrate(queryClient),
-        },
-      };
     } catch (err) {
-      return {
-        notFound: true,
-      };
+      isError = true;
     }
+    return {
+      notFound: isError ? true : false,
+      props: {
+        dehydratedState: dehydrate(queryClient),
+      },
+    };
   }
 });
