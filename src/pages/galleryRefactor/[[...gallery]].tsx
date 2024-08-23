@@ -10,7 +10,8 @@ const LazyInfinityComponent = dynamic(() => import('@/components/galleryRefactor
 const LazyDetailComponent = dynamic(() => import('@/components/galleryRefactor/detail/GalleryDetail'));
 const BASE_PATH = '/galleryRefactor';
 
-const GalleryRefactorPage = ({ isError }: { isError: boolean }) => {
+const GalleryRefactorPage = ({ isError, error }: { isError: boolean; error: unknown }) => {
+  console.log(error);
   const router = useRouter();
   return (
     <div>
@@ -31,6 +32,7 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
   const queryKey = ctx.query.postId;
   const queryClient = new QueryClient();
   let isError = false;
+  let error: unknown;
   if (queryKey) {
     try {
       await queryClient.fetchQuery<Post>({
@@ -39,6 +41,7 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
       });
     } catch (err) {
       isError = true;
+      error = err;
     }
   } else {
     try {
@@ -50,12 +53,14 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
       });
     } catch (err) {
       isError = true;
+      error = err;
     }
   }
 
   return {
     props: {
       isError,
+      error,
       dehydratedState: dehydrate(queryClient),
     },
   };
