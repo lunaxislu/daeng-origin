@@ -33,17 +33,23 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
       },
     };
   } else {
-    await queryClient.prefetchInfiniteQuery({
-      queryKey: [PostQueryKey.posts],
-      initialPageParam: 1,
-      queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
-      staleTime: 60 * 1000,
-    });
+    try {
+      await queryClient.fetchInfiniteQuery({
+        queryKey: [PostQueryKey.posts],
+        initialPageParam: 1,
+        queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
+        staleTime: 60 * 1000,
+      });
 
-    return {
-      props: {
-        dehydratedState: dehydrate(queryClient),
-      },
-    };
+      return {
+        props: {
+          dehydratedState: dehydrate(queryClient),
+        },
+      };
+    } catch (err) {
+      return {
+        notFound: true,
+      };
+    }
   }
 });
