@@ -51,7 +51,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
           <Head>
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           </Head>
-          <ReactQueryDevtools initialIsOpen={false} />
+          <div style={{ fontSize: '24px' }}>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </div>
           <main className={cn(myFont.variable)}>
             <CommonLayout>
               <Component {...pageProps} />

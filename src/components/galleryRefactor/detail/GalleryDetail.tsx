@@ -1,12 +1,13 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import useFetchGalleryDetail from '@/hooks/server/galleryRefactor/detail-hook/useFetchGalleryDetail';
-import { PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
+import { Post, PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
 import { useQueryClient } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { fetchGalleryDetail } from '../api/handler';
 import GallerySkeleton from '../skeleton/GallerySkeleton';
+import { useEffect, useState } from 'react';
 const CSRPaginationComponent = dynamic(() => import('./GalleryPagination'), {
   ssr: false,
   loading: () => <GallerySkeleton />,
@@ -21,6 +22,30 @@ const GalleryDetail = () => {
     queryKey: [PostQueryKey.posts],
     useQueryClient: queryClient,
   });
+  const [specificData, setSpecificData] = useState<Post | undefined>(data ?? undefined);
+
+  const updateSpecificData = (newData: Post | undefined) => {
+    if (newData) {
+      setSpecificData(preData => {
+        if (!preData) return newData;
+        if (preData) {
+          const updatedData: Post = { ...preData };
+
+          // keyof Post로 typedKey의 타입을 보장
+          (Object.keys(newData) as (keyof Post)[]).forEach(key => {
+            if (updatedData[key]) {
+              const a = newData[key] as any;
+              (updatedData[key] as unknown) = a as any;
+            }
+          });
+          return updatedData;
+        }
+      });
+    }
+  };
+  useEffect(() => {
+    updateSpecificData(data);
+  }, [data]);
 
   return (
     <div className=" flex flex-col items-center justify-center">
@@ -41,6 +66,7 @@ const GalleryDetail = () => {
         <h2 className="text-2xl font-bold">{data?.title}</h2>
         <span className="text-gray-500">{data?.updatedAt}</span>
       </div>
+      <h1 className="font-bold text-4xl">{data?.id}</h1>
       <p className="mt-2 w-[84.6rem]">{data?.content}</p>
       <div className="mt-4 w-[84.6rem] flex space-x-2">
         {data?.postcategory?.map(category => (

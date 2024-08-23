@@ -7,9 +7,9 @@ import { GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
-const BASE_PATH = '/galleryRefactor';
 const LazyInfinityComponent = dynamic(() => import('@/components/galleryRefactor/main/GalleryList'));
 const LazyDetailComponent = dynamic(() => import('@/components/galleryRefactor/detail/GalleryDetail'));
+const BASE_PATH = '/galleryRefactor';
 const GalleryRefactorPage = () => {
   const router = useRouter();
   return <div>{router.asPath === BASE_PATH ? <LazyInfinityComponent /> : <LazyDetailComponent />}</div>;
@@ -30,8 +30,10 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
       queryKey: [PostQueryKey.posts],
       initialPageParam: 1,
       queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
+      staleTime: 60 * 1000,
     });
   }
+
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
