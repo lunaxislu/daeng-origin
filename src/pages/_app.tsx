@@ -22,10 +22,19 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     const [navigation] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
     if (navigation) {
       const ttfb = navigation.responseStart - navigation.requestStart;
-      const serverProcessingTime = navigation.responseStart - navigation.requestStart;
+      const responseTime = navigation.responseEnd - navigation.responseStart;
+      const pageLoadTime = navigation.loadEventEnd - navigation.startTime;
+      const domContentLoaded = navigation.domContentLoadedEventEnd - navigation.startTime;
 
-      console.log('Time to First Byte (TTFB):', ttfb, 'ms');
-      console.log('Server Processing Time:', serverProcessingTime, 'ms');
+      console.log('TTFB:', ttfb, 'ms', '<- 브라우저가 서버로 요청을 보낸 후 첫 번째 바이트를 받을 때까지의 시간.');
+      console.log('Response Time:', responseTime, 'ms', '<- 서버에서 응답이 완료되기까지 걸린 시간.');
+      console.log('Page Load Time:', pageLoadTime, 'ms', '<- 전체 페이지가 로드되는 데 걸린 시간.');
+      console.log(
+        'DOM Content Loaded:',
+        domContentLoaded,
+        'ms',
+        '<- HTML 문서가 완전히 파싱되어 DOMContentLoaded 이벤트가 발생할 때까지의 시간.',
+      );
     }
     const handleRouteChangeStart = (page: string) => {
       console.time(`${page} Page Transition Time`);
