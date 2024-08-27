@@ -1,6 +1,6 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import useFetchGalleryDeleteQuery from '@/hooks/server/gallery/useFetchGalleryDeleteQuery';
-import { format } from 'date-fns';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Button } from '../ui/button';
@@ -43,7 +43,7 @@ const GalleryDetail = ({ gallery, isLoading }: { gallery?: I_GalleryData; isLoad
       </Carousel>
       <div className="mt-4 flex justify-between w-[84.6rem]">
         <h2 className="text-2xl font-bold">{gallery?.title}</h2>
-        <span className="text-gray-500">{format(new Date(gallery!.updatedAt), 'yyyy년 MM월 dd일')}</span>
+        <span className="text-gray-500">{dayjs(gallery.updatedAt).format('yy-mm-dd')}</span>
       </div>
       <p className="mt-2 w-[84.6rem]">{gallery?.content}</p>
       <div className="mt-4 w-[84.6rem] flex space-x-2">

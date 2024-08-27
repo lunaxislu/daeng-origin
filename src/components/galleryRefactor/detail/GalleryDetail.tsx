@@ -2,6 +2,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import useFetchGalleryDetail from '@/hooks/server/galleryRefactor/detail-hook/useFetchGalleryDetail';
 import { Post, PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
 import { useQueryClient } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -64,7 +65,7 @@ const GalleryDetail = () => {
       </Carousel>
       <div className="mt-4 flex justify-between w-[84.6rem]">
         <h2 className="text-2xl font-bold">{specificData?.title}</h2>
-        <span className="text-gray-500">{specificData?.updatedAt}</span>
+        <span className="text-gray-500">{dayjs(specificData?.updatedAt).format('yyyy-mm-dd')}</span>
       </div>
       <h1 className="font-bold text-4xl">{specificData?.id}</h1>
       <p className="mt-2 w-[84.6rem]">{specificData?.content}</p>
