@@ -22,17 +22,29 @@ export const getServerSideProps = withCSR(async (ctx: GetServerSidePropsContext)
   const queryClient = new QueryClient();
 
   if (queryKey) {
-    await queryClient.prefetchQuery<Post>({
-      queryKey: [PostQueryKey.posts, queryKey],
-      queryFn: () => fetchGalleryDetail(queryKey as string),
-    });
+    try {
+      await queryClient.fetchQuery<Post>({
+        queryKey: [PostQueryKey.posts, queryKey],
+        queryFn: () => fetchGalleryDetail(queryKey as string),
+      });
+    } catch (err) {
+      return {
+        notFound: true,
+      };
+    }
   } else {
-    await queryClient.prefetchInfiniteQuery({
-      queryKey: [PostQueryKey.posts],
-      initialPageParam: 1,
-      queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
-      staleTime: 60 * 1000,
-    });
+    try {
+      await queryClient.fetchInfiniteQuery({
+        queryKey: [PostQueryKey.posts],
+        initialPageParam: 1,
+        queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
+        staleTime: 60 * 1000,
+      });
+    } catch (err) {
+      return {
+        notFound: true,
+      };
+    }
   }
 
   return {

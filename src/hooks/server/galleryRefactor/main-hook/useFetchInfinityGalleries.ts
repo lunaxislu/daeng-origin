@@ -3,7 +3,7 @@ import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 
 interface IProps {
   queryKey: string[];
-  fetchInfinityGalleries: ({ pageParam }: { pageParam: number }) => Promise<any>;
+  handleApiRouter: ({ pageParam }: { pageParam: number }) => Promise<any>;
 }
 interface IQueryData {
   pageParams: number[];
@@ -14,12 +14,13 @@ const useFetchInfinityGalleries = (props: IProps) => {
   const { data, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
     {
       queryKey: props.queryKey,
-      queryFn: ({ pageParam }) => props.fetchInfinityGalleries({ pageParam }),
+      queryFn: ({ pageParam }) => props.handleApiRouter({ pageParam }),
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
         return lastPage.length > 0 ? allPages.length + 1 : undefined;
       },
       select: (data: IQueryData) => {
+        console.log('🚀 ~ useFetchInfinityGalleries ~ data:', data);
         const res = data.pages.map(pageData => pageData).flat();
 
         res.forEach(data => {

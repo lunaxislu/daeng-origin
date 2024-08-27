@@ -4,7 +4,7 @@ import { PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
 import { QueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import { fetchGalleryDetail } from '../api/handler';
+import { handleDetailApiRouter } from '../api/handler';
 
 interface PostDetailPaginationProps {
   id: string;
@@ -13,7 +13,7 @@ interface PostDetailPaginationProps {
 const GalleryPagination = (props: PostDetailPaginationProps) => {
   const { id, useQueryClient } = props;
   const { results } = usePaginationQueries({
-    fetchGalleryDetail,
+    handleDetailApiRouter,
     id,
     queryKey: [PostQueryKey.posts],
     useQueryClient,
@@ -49,8 +49,8 @@ const GalleryPagination = (props: PostDetailPaginationProps) => {
                 <h3 className="text-xl font-bold mb-2">{query.data?.id}</h3>
                 <p className="text-gray-500 mb-4">{query.data?.content}</p>
                 <div className="flex space-x-2">
-                  {query.data.postcategory.map(category => (
-                    <span key={`${category.id}${id}`} className="bg-gray-200 px-2 py-1 rounded-full text-sm">
+                  {query.data.postcategory?.map(category => (
+                    <span key={category.id} className="bg-gray-200 px-2 py-1 rounded-full text-sm">
                       {category.category}
                     </span>
                   ))}

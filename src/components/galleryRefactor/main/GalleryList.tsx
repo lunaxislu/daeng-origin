@@ -3,7 +3,7 @@ import useFetchInfinityGalleries from '@/hooks/server/galleryRefactor/main-hook/
 import { PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
 import { Fragment } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { fetchInfinityGalleries } from '../api/handler';
+import { handleApiRouter } from '../api/handler';
 import GalleryListItem from './GalleryListItem';
 
 const GalleryList = () => {
@@ -15,11 +15,11 @@ const GalleryList = () => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-    refetch,
   } = useFetchInfinityGalleries({
-    fetchInfinityGalleries,
+    handleApiRouter,
     queryKey: [PostQueryKey.posts],
   });
+
   const { ref, inView } = useInView({
     threshold: 0.1,
     onChange: (inView, entry) => {
