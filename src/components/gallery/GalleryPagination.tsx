@@ -2,13 +2,13 @@ import usePaginationQueries from '@/hooks/server/galleryRefactor/pagination-hook
 import { useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { fetchGalleryDetail } from '../galleryRefactor/api/handler';
+import { handleDetailApiRouter } from '../galleryRefactor/api/handler';
 import Skeleton from '../ui/skeleton';
 
 const GalleryPagination = ({ id }: { id: string }) => {
   const queryClient = useQueryClient();
   const { results } = usePaginationQueries({
-    fetchGalleryDetail: fetchGalleryDetail,
+    handleDetailApiRouter,
     queryKey: ['galleryUpload'],
     id,
     useQueryClient: queryClient,

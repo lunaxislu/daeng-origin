@@ -8,11 +8,11 @@ import GalleryPagination from './GalleryPagination';
 import { I_GalleryData } from './type/gallery';
 
 const GalleryDetail = ({ gallery, isLoading }: { gallery?: I_GalleryData; isLoading: boolean }) => {
+  console.log('🚀 ~ GalleryDetail ~ gallery:', gallery);
   const { query, push } = useRouter();
   const { id, userId } = query as { id: string; userId: string };
   const { mutate: deleteGallery } = useFetchGalleryDeleteQuery(id);
 
-  console.log(userId);
   const handleEdit = () => {
     push(`/gallery/edit/${id}`);
   };

@@ -4,14 +4,16 @@ import { PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
 import { QueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { handleDetailApiRouter } from '../api/handler';
 
 interface PostDetailPaginationProps {
-  id: string;
   useQueryClient: QueryClient;
 }
 const GalleryPagination = (props: PostDetailPaginationProps) => {
-  const { id, useQueryClient } = props;
+  const { useQueryClient } = props;
+  const router = useRouter();
+  const id = router.query.postId as string;
   const { results } = usePaginationQueries({
     handleDetailApiRouter,
     id,

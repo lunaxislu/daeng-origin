@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { handleDetailApiRouter } from '../api/handler';
 import GallerySkeleton from '../skeleton/GallerySkeleton';
 const CSRPaginationComponent = dynamic(() => import('./GalleryPagination'), {
@@ -44,9 +44,9 @@ const GalleryDetail = () => {
       });
     }
   };
-  useEffect(() => {
-    updateSpecificData(data);
-  }, [data]);
+  // useEffect(() => {
+  //   updateSpecificData(data);
+  // }, [data]);
 
   return (
     <div className=" flex flex-col items-center justify-center">
@@ -81,4 +81,4 @@ const GalleryDetail = () => {
   );
 };
 
-export default GalleryDetail;
+export default React.memo(GalleryDetail);

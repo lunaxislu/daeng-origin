@@ -33,7 +33,7 @@ export const handleDetailApiRouter = async (id: string) => {
     const { data } = await axios.get(`api/gallery/handler`, {
       params: {
         type: 'specific',
-        find: id,
+        find: `${id}`,
       },
     });
     return data;
