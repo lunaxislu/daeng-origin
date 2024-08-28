@@ -18,7 +18,6 @@ const Logo = () => {
   return (
     <span className={cn('flex items-center cursor-pointer h-full', px500)} onClick={ClickHomeRedirectionHandler}>
       <Title level={3} isOutfit={true} className="font-bold m-0 p-0" text="daeng deang Nyang" />
-      <Title level={3} isOutfit={true} className="font-bold m-10 p-0" text="리팩토링 사이트" />
     </span>
   );
 };
