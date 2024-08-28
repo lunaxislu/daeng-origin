@@ -24,7 +24,6 @@ export default async function serverRequest(req: NextApiRequest, res: NextApiRes
 
   try {
     const result = await fetchGalleryDataInAPIRouter(isAllOrOne);
-
     res.send(result);
   } catch (err) {
     console.log(err);

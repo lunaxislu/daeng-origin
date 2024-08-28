@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { I_GalleryData } from './type/gallery';
@@ -35,7 +36,7 @@ const GalleryItem = ({ gallery }: I_GalleryItemProps) => {
       <p className="text-gray-500 mb-4">{gallery?.content}</p>
       <div className="flex space-x-2">
         {gallery?.postcategory?.map(category => (
-          <span key={category.id} className="bg-gray-200 px-2 py-1 rounded-full text-sm">
+          <span key={nanoid()} className="bg-gray-200 px-2 py-1 rounded-full text-sm">
             {category.category}
           </span>
         ))}

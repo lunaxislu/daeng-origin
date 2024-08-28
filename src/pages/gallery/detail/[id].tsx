@@ -1,5 +1,6 @@
 import GalleryDetail from '@/components/gallery/GalleryDetail';
-import useFetchGalleryDetailQuery from '@/hooks/server/gallery/useFetchGalleryDetailQuery';
+import { handleDetailApiRouter } from '@/components/galleryRefactor/api/handler';
+import useFetchGalleryDetail from '@/hooks/server/galleryRefactor/detail-hook/useFetchGalleryDetail';
 import { NextPageContext } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -7,7 +8,11 @@ import { useRouter } from 'next/router';
 const GalleryDetailPage = () => {
   const { query } = useRouter();
   const { id } = query as { id: string };
-  const { data, isLoading, refetch: fetchGalleries } = useFetchGalleryDetailQuery(id);
+  const { data, isLoading, isError } = useFetchGalleryDetail({
+    queryKey: ['galleryDetail', id],
+    id,
+    handleDetailApiRouter: handleDetailApiRouter,
+  });
 
   return (
     <>

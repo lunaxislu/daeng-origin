@@ -1,14 +1,15 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import useFetchGalleryDeleteQuery from '@/hooks/server/gallery/useFetchGalleryDeleteQuery';
+import { Post } from '@/types/galleryRefactor/galleryRefactor';
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Button } from '../ui/button';
 import GalleryPagination from './GalleryPagination';
-import { I_GalleryData } from './type/gallery';
 
-const GalleryDetail = ({ gallery, isLoading }: { gallery?: I_GalleryData; isLoading: boolean }) => {
-  console.log('🚀 ~ GalleryDetail ~ gallery:', gallery);
+const GalleryDetail = ({ gallery, isLoading }: { gallery?: Post; isLoading: boolean }) => {
+  const uniqueId = () => nanoid();
   const { query, push } = useRouter();
   const { id, userId } = query as { id: string; userId: string };
   const { mutate: deleteGallery } = useFetchGalleryDeleteQuery(id);
@@ -31,7 +32,7 @@ const GalleryDetail = ({ gallery, isLoading }: { gallery?: I_GalleryData; isLoad
       <Carousel className="w-[84.6rem] h-[56rem] mb-8 cursor-pointer">
         <CarouselContent>
           {gallery?.images?.map((image, index) => (
-            <CarouselItem key={image.id}>
+            <CarouselItem key={uniqueId()}>
               <div className="w-[84.6rem] h-[56rem] flex justify-center items-center rounded-3xl">
                 <Image src={image.image} alt={`Slide ${index + 1}`} objectFit="cover" width={846} height={560} />
               </div>
@@ -48,7 +49,7 @@ const GalleryDetail = ({ gallery, isLoading }: { gallery?: I_GalleryData; isLoad
       <p className="mt-2 w-[84.6rem]">{gallery?.content}</p>
       <div className="mt-4 w-[84.6rem] flex space-x-2">
         {gallery?.postcategory?.map(category => (
-          <span key={category.id} className="bg-gray-200 px-2 py-1 rounded-full text-sm">
+          <span key={uniqueId()} className="bg-gray-200 px-2 py-1 rounded-full text-sm">
             {category.category}
           </span>
         ))}

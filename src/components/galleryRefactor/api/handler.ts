@@ -15,7 +15,7 @@ const instance = axios.create({
 // Client InfinityScroll Fn
 export const handleApiRouter = async ({ pageParam = 1 }) => {
   try {
-    const { data } = await axios.get(`api/gallery/handler`, {
+    const { data } = await APInstance.get(`gallery/handler`, {
       params: {
         type: 'infinity',
         find: pageParam,
@@ -30,7 +30,7 @@ export const handleApiRouter = async ({ pageParam = 1 }) => {
 
 export const handleDetailApiRouter = async (id: string) => {
   try {
-    const { data } = await axios.get(`api/gallery/handler`, {
+    const { data } = await APInstance.get(`gallery/handler`, {
       params: {
         type: 'specific',
         find: `${id}`,

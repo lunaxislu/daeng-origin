@@ -7,14 +7,15 @@ interface PostDetailProps {
   handleDetailApiRouter: (id: string) => Promise<TPostData>;
   id: string;
   queryKey: string[];
-  useQueryClient: QueryClient;
+  useQueryClient?: QueryClient;
 }
 const useFetchGalleryDetail = (props: PostDetailProps) => {
   const { handleDetailApiRouter, id, queryKey, useQueryClient } = props;
   const { data, isLoading, isError } = useQuery<TPostData>({
     queryKey: [...queryKey, id],
     queryFn: () => handleDetailApiRouter(id),
-    initialData: useQueryClient.getQueryData<TPostData>([...queryKey, id]),
+    initialData: useQueryClient?.getQueryData<TPostData>([...queryKey, id]),
+    retry: false,
   });
   return {
     data,

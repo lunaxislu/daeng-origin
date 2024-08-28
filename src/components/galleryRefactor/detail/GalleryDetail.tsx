@@ -3,10 +3,11 @@ import useFetchGalleryDetail from '@/hooks/server/galleryRefactor/detail-hook/us
 import { Post, PostQueryKey } from '@/types/galleryRefactor/galleryRefactor';
 import { useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { handleDetailApiRouter } from '../api/handler';
 import GallerySkeleton from '../skeleton/GallerySkeleton';
 const CSRPaginationComponent = dynamic(() => import('./GalleryPagination'), {
@@ -44,16 +45,17 @@ const GalleryDetail = () => {
       });
     }
   };
-  // useEffect(() => {
-  //   updateSpecificData(data);
-  // }, [data]);
+
+  useEffect(() => {
+    updateSpecificData(data);
+  }, [data]);
 
   return (
     <div className=" flex flex-col items-center justify-center">
       <Carousel className="w-[84.6rem] h-[56rem] mb-8 cursor-pointer">
         <CarouselContent>
           {specificData?.images?.map((image, index) => (
-            <CarouselItem key={image.id}>
+            <CarouselItem key={`${nanoid()} `}>
               <div className="w-[84.6rem] h-[56rem] flex justify-center items-center rounded-3xl">
                 <Image src={image.image} alt={`Slide ${index + 1}`} objectFit="cover" width={846} height={560} />
               </div>
@@ -71,7 +73,7 @@ const GalleryDetail = () => {
       <p className="mt-2 w-[84.6rem]">{specificData?.content}</p>
       <div className="mt-4 w-[84.6rem] flex space-x-2">
         {specificData?.postcategory?.map(category => (
-          <span key={category.id} className="bg-gray-200 px-2 py-1 rounded-full text-sm">
+          <span key={nanoid()} className="bg-gray-200 px-2 py-1 rounded-full text-sm">
             {category.category}
           </span>
         ))}
