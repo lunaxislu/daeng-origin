@@ -1,10 +1,10 @@
+import { Post } from '@/types/galleryRefactor/galleryRefactor';
 import { nanoid } from 'nanoid';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { I_GalleryData } from './type/gallery';
 
 interface I_GalleryItemProps {
-  gallery: I_GalleryData;
+  gallery: Post;
 }
 
 const GalleryItem = ({ gallery }: I_GalleryItemProps) => {

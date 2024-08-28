@@ -1,9 +1,9 @@
 import useFetchGalleryQuery from '@/hooks/server/gallery/useFetchGalleryQuery';
+import { Post } from '@/types/galleryRefactor/galleryRefactor';
 import { nanoid } from 'nanoid';
 import { useInView } from 'react-intersection-observer';
 import GalleryItem from './GalleryItem';
 import GalleryListSkeleton from './skeleton/GalleryListSkeleton';
-import { I_GalleryData } from './type/gallery';
 
 const GalleryList = () => {
   const { data: galleries, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useFetchGalleryQuery();
@@ -22,7 +22,7 @@ const GalleryList = () => {
   return (
     <>
       <div className="flex flex-wrap justify-start w-[128rem] h-auto gap-[0.8rem] mx-auto">
-        {galleries.map((gallery: I_GalleryData, index) => (
+        {galleries.map((gallery: Post, index) => (
           <GalleryItem gallery={gallery} key={nanoid()} />
         ))}
       </div>

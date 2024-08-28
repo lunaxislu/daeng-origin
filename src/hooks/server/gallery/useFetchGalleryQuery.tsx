@@ -1,4 +1,4 @@
-import { fetchInfinityGalleries } from '@/components/galleryRefactor/api/handler';
+import { handleApiRouter } from '@/components/galleryRefactor/api/handler';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 const useFetchGalleryQuery = () => {
@@ -8,7 +8,7 @@ const useFetchGalleryQuery = () => {
   const { data, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
     {
       queryKey: ['galleryUpload'],
-      queryFn: ({ pageParam }) => fetchInfinityGalleries({ pageParam }),
+      queryFn: ({ pageParam }) => handleApiRouter({ pageParam }),
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPage) => {
         if (lastPage) {

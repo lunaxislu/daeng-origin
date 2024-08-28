@@ -6,11 +6,6 @@ const ApiURL = process.env.NEXT_PUBLIC_GALLERY_API_BASE_URL;
 const APInstance = axios.create({
   baseURL: ApiURL,
 });
-// 서버주소
-const baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
-const instance = axios.create({
-  baseURL,
-});
 
 // Client InfinityScroll Fn
 export const handleApiRouter = async ({ pageParam = 1 }) => {
@@ -41,6 +36,12 @@ export const handleDetailApiRouter = async (id: string) => {
     throw err;
   }
 };
+
+// 서버주소
+const baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
+const instance = axios.create({
+  baseURL,
+});
 // SSR infinity
 export const fetchInfinityGalleries = async ({ pageParam = 1 }) => {
   try {
